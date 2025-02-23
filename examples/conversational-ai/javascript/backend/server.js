@@ -34,7 +34,7 @@ async function connectToMongo() {
   }
 }
 
-const ELEVENLABS_API_KEY = 'sk_643d42f2e85e431fc182c588d2d99cb922436b1b68b16d14';
+const ELEVENLABS_API_KEY = 'sk_a8ff9ec0ce1dc380f8aff53b1958d7b849bd596769c0e8af';
 const ELEVENLABS_API_URL = 'https://api.elevenlabs.io/v1';
 
 app.use(express.json());
@@ -181,15 +181,6 @@ app.get("/api/signed-url", async (req, res) => {
         headers: {
           "xi-api-key": process.env.XI_API_KEY,
         },
-      }
-    );
-
-    await db.collection('campaigns').updateOne(
-      { _id: campaignResult.insertedId },
-      {
-        $set: {
-          convaiAgentUrl: response.url
-        }
       }
     );
 

@@ -5,19 +5,48 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ElevenLabs Conversational AI Demo</title>
     <link rel="stylesheet" href="/static/styles.css">
+    <style>
+        .email-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 20px 0;
+            gap: 10px;
+        }
+        
+        .email-container input {
+            width: 300px;
+            padding: 8px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+        }
+    </style>
 </head>
 <body>
     <div class="container">
-        <h1>ElevenLabs Conversational AI Demo</h1>
+        <h1>Your job interview</h1>
+        <div class="email-container">
+            <label for="email">Enter your email:</label>
+            <input type="email" id="email" name="email" required placeholder="your@email.com">
+        </div>
         <div class="status-container">
             <div id="connectionStatus" class="status">Disconnected</div>
             <div id="speakingStatus" class="speaking-status">Agent Silent</div>
         </div>
         <div class="controls">
-            <button id="startButton" class="button">Start Conversation</button>
+            <button id="startButton" class="button" disabled>Start Conversation</button>
             <button id="endButton" class="button" disabled>End Conversation</button>
         </div>
     </div>
     <script src="/static/bundle.js"></script>
+    <script>
+        const emailInput = document.getElementById('email');
+        const startButton = document.getElementById('startButton');
+
+        emailInput.addEventListener('input', function() {
+            const isEmailValid = emailInput.checkValidity();
+            startButton.disabled = !isEmailValid;
+        });
+    </script>
 </body>
 </html>

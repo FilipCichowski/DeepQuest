@@ -5,120 +5,242 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Recruitment Campaign Manager</title>
   <style>
-      body {
-          font-family: Arial, sans-serif;
-          max-width: 800px;
-          margin: 0 auto;
-          padding: 20px;
-      }
-      .campaign-form {
-          background-color: #f5f5f5;
-          padding: 20px;
-          border-radius: 8px;
-          margin-bottom: 20px;
-      }
-      .campaign {
-          background-color: white;
-          padding: 20px;
-          margin-bottom: 20px;
-          border-radius: 8px;
-          box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-      }
-      .questions-container {
-          margin: 20px 0;
-      }
-      .question-input {
-          display: flex;
-          gap: 10px;
-          margin-bottom: 10px;
-      }
-      input[type="text"] {
-          width: 100%;
-          padding: 8px;
-          margin-bottom: 10px;
-          border: 1px solid #ddd;
-          border-radius: 4px;
-      }
-      button {
-          background-color: #4CAF50;
-          color: white;
-          padding: 10px 20px;
-          border: none;
-          border-radius: 4px;
-          cursor: pointer;
-          margin-right: 10px;
-      }
-      button:hover {
-          background-color: #45a049;
-      }
-      .remove-btn {
-          background-color: #ff4444;
-      }
-      .remove-btn:hover {
-          background-color: #cc0000;
-      }
-      .url-container {
-          display: flex;
-          align-items: center;
-          gap: 10px;
-          margin-top: 10px;
-      }
-      .interview-link {
-          color: #4CAF50;
-          text-decoration: none;
-          padding: 5px 10px;
-          border: 1px solid #4CAF50;
-          border-radius: 4px;
-      }
-      .interview-link:hover {
-          background-color: #4CAF50;
-          color: white;
-      }
-      .copy-btn {
-          background-color: #2196F3;
-          padding: 5px 10px;
-          font-size: 14px;
-      }
-      .copy-btn:hover {
-          background-color: #1976D2;
-      }
-      .question {
-          background-color: #f5f5f5;
-          padding: 10px;
-          margin: 5px 0;
-          border-radius: 4px;
-      }
-      .confirmation-dialog {
-          position: fixed;
-          top: 50%;
-          left: 50%;
-          transform: translate(-50%, -50%);
-          background-color: white;
-          padding: 20px;
-          border-radius: 8px;
-          box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-          z-index: 1000;
-          max-width: 500px;
-          width: 90%;
-      }
-      .dialog-overlay {
-          position: fixed;
-          top: 0;
-          left: 0;
-          right: 0;
-          bottom: 0;
-          background-color: rgba(0,0,0,0.5);
-          z-index: 999;
-      }
-  </style>
+    :root {
+        --primary: #2563eb;
+        --primary-hover: #1d4ed8;
+        --danger: #ef4444;
+        --danger-hover: #dc2626;
+        --neutral-50: #f8fafc;
+        --neutral-100: #f1f5f9;
+        --neutral-200: #e2e8f0;
+        --neutral-700: #334155;
+        --neutral-800: #1e293b;
+    }
+
+    * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+    }
+
+    body {
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        max-width: 1000px;
+        margin: 0 auto;
+        padding: 32px;
+        background: var(--neutral-50);
+        color: var(--neutral-800);
+        line-height: 1.5;
+    }
+
+    h1 {
+        font-size: 2.25rem;
+        font-weight: 700;
+        margin-bottom: 2rem;
+        color: var(--neutral-800);
+    }
+
+    h2 {
+        font-size: 1.5rem;
+        font-weight: 600;
+        margin-bottom: 1.5rem;
+    }
+
+    h3 {
+        font-size: 1.25rem;
+        font-weight: 600;
+        margin-bottom: 1rem;
+        color: var(--neutral-700);
+    }
+
+    .campaign-form {
+        background: white;
+        padding: 2rem;
+        border-radius: 1rem;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        margin-bottom: 2rem;
+    }
+
+    .campaign {
+        background: white;
+        padding: 2rem;
+        border-radius: 1rem;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        margin-bottom: 2rem;
+        transition: transform 0.2s;
+    }
+
+    .campaign:hover {
+        transform: translateY(-2px);
+    }
+
+    .questions-container {
+        margin: 1.5rem 0;
+    }
+
+    .question-input {
+        display: flex;
+        gap: 1rem;
+        margin-bottom: 1rem;
+    }
+
+    input[type="text"] {
+        width: 100%;
+        padding: 0.75rem 1rem;
+        border: 1px solid var(--neutral-200);
+        border-radius: 0.5rem;
+        font-size: 1rem;
+        transition: border-color 0.2s;
+    }
+
+    input[type="text"]:focus {
+        outline: none;
+        border-color: var(--primary);
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    }
+
+    button {
+        padding: 0.75rem 1.5rem;
+        border: none;
+        border-radius: 0.5rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+
+    button:not(.remove-btn):not(.copy-btn) {
+        background: var(--primary);
+        color: white;
+    }
+
+    button:not(.remove-btn):not(.copy-btn):hover {
+        background: var(--primary-hover);
+    }
+
+    .remove-btn {
+        background: var(--danger);
+        color: white;
+    }
+
+    .remove-btn:hover {
+        background: var(--danger-hover);
+    }
+
+    .question {
+        background: var(--neutral-100);
+        padding: 1rem;
+        margin: 0.5rem 0;
+        border-radius: 0.5rem;
+        font-size: 1rem;
+    }
+
+    .url-container {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        margin-top: 1rem;
+    }
+
+    .interview-link {
+        color: var(--primary);
+        text-decoration: none;
+        padding: 0.5rem 1rem;
+        border: 2px solid var(--primary);
+        border-radius: 0.5rem;
+        transition: all 0.2s;
+        font-weight: 500;
+    }
+
+    .interview-link:hover {
+        background: var(--primary);
+        color: white;
+    }
+
+    .copy-btn {
+        background: var(--neutral-100);
+        color: var(--neutral-700);
+        padding: 0.5rem 1rem;
+        font-size: 0.875rem;
+    }
+
+    .copy-btn:hover {
+        background: var(--neutral-200);
+    }
+
+    .candidates-section {
+        margin-top: 2rem;
+        border-top: 1px solid var(--neutral-200);
+        padding-top: 2rem;
+    }
+
+    .candidate-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr 2fr;
+        gap: 1.5rem;
+        padding: 1rem;
+        border-radius: 0.5rem;
+        margin-bottom: 0.5rem;
+        transition: background-color 0.2s;
+    }
+
+    .candidate-row:not(.candidates-header):hover {
+        background: var(--neutral-100);
+    }
+
+    .candidates-header {
+        font-weight: 600;
+        color: var(--neutral-700);
+        border-bottom: 2px solid var(--neutral-200);
+        padding-bottom: 0.75rem;
+        margin-bottom: 1rem;
+    }
+
+    .confirmation-dialog {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: white;
+        padding: 2rem;
+        border-radius: 1rem;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 10px 15px rgba(0, 0, 0, 0.1);
+        z-index: 1000;
+        max-width: 600px;
+        width: 90%;
+    }
+
+    .dialog-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.5);
+        backdrop-filter: blur(4px);
+        z-index: 999;
+    }
+
+    @media (max-width: 768px) {
+        body {
+            padding: 16px;
+        }
+
+        .candidate-row {
+            grid-template-columns: 1fr;
+            gap: 0.5rem;
+        }
+
+        .campaign {
+            padding: 1.5rem;
+        }
+    }
+</style>
 </head>
 <body>
 <h1>Recruitment Campaign Manager</h1>
-
 <div class="campaign-form">
   <h2>Create New Campaign</h2>
   <input type="text" id="campaignTitle" placeholder="Campaign Title" required>
-
   <div class="questions-container" id="questionsContainer">
     <h3>Questions:</h3>
     <div class="question-input">
@@ -126,16 +248,12 @@
       <button class="remove-btn" onclick="removeQuestionInput(this)">Remove</button>
     </div>
   </div>
-
   <button onclick="addQuestionInput()">Add Another Question</button>
   <button onclick="showConfirmation()">Create Campaign</button>
 </div>
-
 <div id="campaignsList"></div>
-
 <script>
   let campaigns = [];
-
   function addQuestionInput() {
     const container = document.getElementById('questionsContainer');
     const questionDiv = document.createElement('div');
@@ -146,7 +264,6 @@
             `;
     container.appendChild(questionDiv);
   }
-
   function removeQuestionInput(button) {
     const questionsContainer = document.getElementById('questionsContainer');
     if (questionsContainer.getElementsByClassName('question-input').length > 1) {
@@ -155,27 +272,22 @@
       alert('You need at least one question');
     }
   }
-
   function showConfirmation() {
     const title = document.getElementById('campaignTitle').value;
     const questionInputs = document.querySelectorAll('.question-input input');
     const questions = Array.from(questionInputs).map(input => input.value);
-
     // Validation
     if (title.trim() === '') {
       alert('Please enter a campaign title');
       return;
     }
-
     if (questions.some(q => q.trim() === '')) {
       alert('Please fill in all questions');
       return;
     }
-
     // Create confirmation dialog
     const overlay = document.createElement('div');
     overlay.className = 'dialog-overlay';
-
     const dialog = document.createElement('div');
     dialog.className = 'confirmation-dialog';
     dialog.innerHTML = `
@@ -188,26 +300,21 @@
                 <button onclick="createCampaign()">Confirm</button>
                 <button class="remove-btn" onclick="closeConfirmation()">Cancel</button>
             `;
-
     document.body.appendChild(overlay);
     document.body.appendChild(dialog);
   }
-
   function closeConfirmation() {
     document.querySelector('.dialog-overlay')?.remove();
     document.querySelector('.confirmation-dialog')?.remove();
   }
-
   async function createCampaign() {
     const title = document.getElementById('campaignTitle').value;
     const questionInputs = document.querySelectorAll('.question-input input');
     const questions = Array.from(questionInputs).map(input => input.value);
-
     const campaign = {
       title: title,
       questions: questions
     };
-
     try {
       const response = await fetch("http://localhost:3003/createCampaigns", {
         method: "POST",
@@ -216,9 +323,7 @@
         },
         body: JSON.stringify(campaign)
       });
-
       const result = await response.json();
-
       if (result.success) {
         // Reset form
         document.getElementById('campaignTitle').value = '';
@@ -230,7 +335,6 @@
                             <button class="remove-btn" onclick="removeQuestionInput(this)">Remove</button>
                         </div>
                     `;
-
         closeConfirmation();
         // Reload campaigns after creating new one
         await loadCampaigns();
@@ -242,56 +346,83 @@
       alert('Failed to create campaign');
     }
   }
-
   function displayCampaigns(campaignsList) {
-    const campaignsContainer = document.getElementById('campaignsList');
-    if (!Array.isArray(campaignsList)) {
-      console.error('Campaigns list is not an array:', campaignsList);
-      campaignsContainer.innerHTML = '<p>No campaigns available</p>';
-      return;
-    }
+        const campaignsContainer = document.getElementById('campaignsList');
+        if (!Array.isArray(campaignsList)) {
+            console.error('Campaigns list is not an array:', campaignsList);
+            campaignsContainer.innerHTML = '<p>No campaigns available</p>';
+            return;
+        }
 
-    campaignsContainer.innerHTML = campaignsList.map(campaign => {
-      if (!campaign || !campaign.title || !Array.isArray(campaign.questions)) {
-        console.error('Invalid campaign object:', campaign);
-        return '';
-      }
+        campaignsContainer.innerHTML = campaignsList.map(campaign => {
+            if (!campaign || !campaign.title || !Array.isArray(campaign.questions)) {
+                console.error('Invalid campaign object:', campaign);
+                return '';
+            }
 
-      return `
-                    <div class="campaign">
-                        <h2>${campaign.title}</h2>
-                        <div class="questions-list">
-                            <h3>Questions:</h3>
-                            ${campaign.questions.map(question => `
-                                <div class="question">${question}</div>
-                            `).join('')}
-                        </div>
-                        ${campaign.url ? `
-                            <div class="agent-url">
-                                <h4>Interview Link:</h4>
-                                <div class="url-container">
-                                    <a href="${campaign.url}" target="_blank" class="interview-link">Start Interview</a>
-                                    <button onclick="copyUrl('${campaign.url}')" class="copy-btn">
-                                        Copy URL
-                                    </button>
-                                </div>
-                            </div>
-                        ` : ''}
-                        ${campaign.convaiAgentUrl ? `
-                            <div class="agent-url">
-                                <h4>Interview Link (Legacy):</h4>
-                                <div class="url-container">
-                                    <a href="${campaign.convaiAgentUrl}" target="_blank" class="interview-link">Start Interview</a>
-                                    <button onclick="copyUrl('${campaign.convaiAgentUrl}')" class="copy-btn">
-                                        Copy URL
-                                    </button>
-                                </div>
-                            </div>
-                        ` : ''}
+            // Add mock candidate data for the first campaign
+            const candidatesHtml = campaign === campaignsList[0] ? `
+                <div class="candidates-section">
+                    <h3>Candidates</h3>
+                    <div class="candidate-row candidates-header">
+                        <div>Name</div>
+                        <div>Email</div>
+                        <div>Interview Summary</div>
                     </div>
-                `;
-    }).join('');
-  }
+                    <div class="candidate-row">
+                        <div>John Smith</div>
+                        <div>john.smith@email.com</div>
+                        <div>Strong technical skills, 5 years of experience in React. Good communication but needs improvement in system design.</div>
+                    </div>
+                    <div class="candidate-row">
+                        <div>Sarah Johnson</div>
+                        <div>sarah.j@email.com</div>
+                        <div>Excellent problem-solving abilities, 3 years of Python experience. Great cultural fit, strong team player.</div>
+                    </div>
+                    <div class="candidate-row">
+                        <div>Michael Chen</div>
+                        <div>m.chen@email.com</div>
+                        <div>Senior-level backend expertise, 7 years of experience. Strong system design skills, ready for tech lead role.</div>
+                    </div>
+                </div>
+            ` : '';
+
+            return `
+                <div class="campaign">
+                    <h2>${campaign.title}</h2>
+                    <div class="questions-list">
+                        <h3>Questions:</h3>
+                        ${campaign.questions.map(question => `
+                            <div class="question">${question}</div>
+                        `).join('')}
+                    </div>
+                    ${campaign.url ? `
+                        <div class="agent-url">
+                            <h4>Interview Link:</h4>
+                            <div class="url-container">
+                                <a href="${campaign.url}" target="_blank" class="interview-link">Start Interview</a>
+                                <button onclick="copyUrl('${campaign.url}')" class="copy-btn">
+                                    Copy URL
+                                </button>
+                            </div>
+                        </div>
+                    ` : ''}
+                    ${campaign.convaiAgentUrl ? `
+                        <div class="agent-url">
+                            <h4>Interview Link (Legacy):</h4>
+                            <div class="url-container">
+                                <a href="${campaign.convaiAgentUrl}" target="_blank" class="interview-link">Start Interview</a>
+                                <button onclick="copyUrl('${campaign.convaiAgentUrl}')" class="copy-btn">
+                                    Copy URL
+                                </button>
+                            </div>
+                        </div>
+                    ` : ''}
+                    ${candidatesHtml}
+                </div>
+            `;
+        }).join('');
+    }
 
   async function loadCampaigns() {
     try {
@@ -301,9 +432,7 @@
           "Content-Type": "application/json"
         }
       });
-
       const result = await response.json();
-
       if (result.success && Array.isArray(result.campaigns)) {
         campaigns = result.campaigns;
         displayCampaigns(campaigns);
@@ -316,7 +445,6 @@
       displayCampaigns([]);  // Display empty state on error
     }
   }
-
   async function copyUrl(url) {
     try {
       await navigator.clipboard.writeText(url);
@@ -326,7 +454,6 @@
       alert('Failed to copy URL. Please try again.');
     }
   }
-
   // Load saved campaigns when page loads
   document.addEventListener('DOMContentLoaded', loadCampaigns);
 </script>
