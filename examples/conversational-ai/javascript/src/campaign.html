@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Recruitment Campaign Manager</title>
+  <style>
+      body {
+          font-family: Arial, sans-serif;
+          max-width: 800px;
+          margin: 0 auto;
+          padding: 20px;
+      }
+      .campaign-form {
+          background-color: #f5f5f5;
+          padding: 20px;
+          border-radius: 8px;
+          margin-bottom: 20px;
+      }
+      .campaign {
+          background-color: white;
+          padding: 20px;
+          margin-bottom: 20px;
+          border-radius: 8px;
+          box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      }
+      .questions-container {
+          margin: 20px 0;
+      }
+      .question-input {
+          display: flex;
+          gap: 10px;
+          margin-bottom: 10px;
+      }
+      input[type="text"] {
+          width: 100%;
+          padding: 8px;
+          margin-bottom: 10px;
+          border: 1px solid #ddd;
+          border-radius: 4px;
+      }
+      button {
+          background-color: #4CAF50;
+          color: white;
+          padding: 10px 20px;
+          border: none;
+          border-radius: 4px;
+          cursor: pointer;
+          margin-right: 10px;
+      }
+      button:hover {
+          background-color: #45a049;
+      }
+      .remove-btn {
+          background-color: #ff4444;
+      }
+      .remove-btn:hover {
+          background-color: #cc0000;
+      }
+      .url-container {
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          margin-top: 10px;
+      }
+      .interview-link {
+          color: #4CAF50;
+          text-decoration: none;
+          padding: 5px 10px;
+          border: 1px solid #4CAF50;
+          border-radius: 4px;
+      }
+      .interview-link:hover {
+          background-color: #4CAF50;
+          color: white;
+      }
+      .copy-btn {
+          background-color: #2196F3;
+          padding: 5px 10px;
+          font-size: 14px;
+      }
+      .copy-btn:hover {
+          background-color: #1976D2;
+      }
+      .question {
+          background-color: #f5f5f5;
+          padding: 10px;
+          margin: 5px 0;
+          border-radius: 4px;
+      }
+      .confirmation-dialog {
+          position: fixed;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          background-color: white;
+          padding: 20px;
+          border-radius: 8px;
+          box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+          z-index: 1000;
+          max-width: 500px;
+          width: 90%;
+      }
+      .dialog-overlay {
+          position: fixed;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background-color: rgba(0,0,0,0.5);
+          z-index: 999;
+      }
+  </style>
+</head>
+<body>
+<h1>Recruitment Campaign Manager</h1>
+
+<div class="campaign-form">
+  <h2>Create New Campaign</h2>
+  <input type="text" id="campaignTitle" placeholder="Campaign Title" required>
+
+  <div class="questions-container" id="questionsContainer">
+    <h3>Questions:</h3>
+    <div class="question-input">
+      <input type="text" placeholder="Enter question" required>
+      <button class="remove-btn" onclick="removeQuestionInput(this)">Remove</button>
+    </div>
+  </div>
+
+  <button onclick="addQuestionInput()">Add Another Question</button>
+  <button onclick="showConfirmation()">Create Campaign</button>
+</div>
+
+<div id="campaignsList"></div>
+
+<script>
+  let campaigns = [];
+
+  function addQuestionInput() {
+    const container = document.getElementById('questionsContainer');
+    const questionDiv = document.createElement('div');
+    questionDiv.className = 'question-input';
+    questionDiv.innerHTML = `
+                <input type="text" placeholder="Enter question" required>
+                <button class="remove-btn" onclick="removeQuestionInput(this)">Remove</button>
+            `;
+    container.appendChild(questionDiv);
+  }
+
+  function removeQuestionInput(button) {
+    const questionsContainer = document.getElementById('questionsContainer');
+    if (questionsContainer.getElementsByClassName('question-input').length > 1) {
+      button.parentElement.remove();
+    } else {
+      alert('You need at least one question');
+    }
+  }
+
+  function showConfirmation() {
+    const title = document.getElementById('campaignTitle').value;
+    const questionInputs = document.querySelectorAll('.question-input input');
+    const questions = Array.from(questionInputs).map(input => input.value);
+
+    // Validation
+    if (title.trim() === '') {
+      alert('Please enter a campaign title');
+      return;
+    }
+
+    if (questions.some(q => q.trim() === '')) {
+      alert('Please fill in all questions');
+      return;
+    }
+
+    // Create confirmation dialog
+    const overlay = document.createElement('div');
+    overlay.className = 'dialog-overlay';
+
+    const dialog = document.createElement('div');
+    dialog.className = 'confirmation-dialog';
+    dialog.innerHTML = `
+                <h3>Confirm Campaign Creation</h3>
+                <p><strong>Title:</strong> ${title}</p>
+                <h4>Questions:</h4>
+                <ul>
+                    ${questions.map(q => `<li>${q}</li>`).join('')}
+                </ul>
+                <button onclick="createCampaign()">Confirm</button>
+                <button class="remove-btn" onclick="closeConfirmation()">Cancel</button>
+            `;
+
+    document.body.appendChild(overlay);
+    document.body.appendChild(dialog);
+  }
+
+  function closeConfirmation() {
+    document.querySelector('.dialog-overlay')?.remove();
+    document.querySelector('.confirmation-dialog')?.remove();
+  }
+
+  async function createCampaign() {
+    const title = document.getElementById('campaignTitle').value;
+    const questionInputs = document.querySelectorAll('.question-input input');
+    const questions = Array.from(questionInputs).map(input => input.value);
+
+    const campaign = {
+      title: title,
+      questions: questions
+    };
+
+    try {
+      const response = await fetch("http://localhost:3003/createCampaigns", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(campaign)
+      });
+
+      const result = await response.json();
+
+      if (result.success) {
+        // Reset form
+        document.getElementById('campaignTitle').value = '';
+        const questionsContainer = document.getElementById('questionsContainer');
+        questionsContainer.innerHTML = `
+                        <h3>Questions:</h3>
+                        <div class="question-input">
+                            <input type="text" placeholder="Enter question" required>
+                            <button class="remove-btn" onclick="removeQuestionInput(this)">Remove</button>
+                        </div>
+                    `;
+
+        closeConfirmation();
+        // Reload campaigns after creating new one
+        await loadCampaigns();
+      } else {
+        alert('Failed to create campaign');
+      }
+    } catch (error) {
+      console.error('Error creating campaign:', error);
+      alert('Failed to create campaign');
+    }
+  }
+
+  function displayCampaigns(campaignsList) {
+    const campaignsContainer = document.getElementById('campaignsList');
+    if (!Array.isArray(campaignsList)) {
+      console.error('Campaigns list is not an array:', campaignsList);
+      campaignsContainer.innerHTML = '<p>No campaigns available</p>';
+      return;
+    }
+
+    campaignsContainer.innerHTML = campaignsList.map(campaign => {
+      if (!campaign || !campaign.title || !Array.isArray(campaign.questions)) {
+        console.error('Invalid campaign object:', campaign);
+        return '';
+      }
+
+      return `
+                    <div class="campaign">
+                        <h2>${campaign.title}</h2>
+                        <div class="questions-list">
+                            <h3>Questions:</h3>
+                            ${campaign.questions.map(question => `
+                                <div class="question">${question}</div>
+                            `).join('')}
+                        </div>
+                        ${campaign.url ? `
+                            <div class="agent-url">
+                                <h4>Interview Link:</h4>
+                                <div class="url-container">
+                                    <a href="${campaign.url}" target="_blank" class="interview-link">Start Interview</a>
+                                    <button onclick="copyUrl('${campaign.url}')" class="copy-btn">
+                                        Copy URL
+                                    </button>
+                                </div>
+                            </div>
+                        ` : ''}
+                        ${campaign.convaiAgentUrl ? `
+                            <div class="agent-url">
+                                <h4>Interview Link (Legacy):</h4>
+                                <div class="url-container">
+                                    <a href="${campaign.convaiAgentUrl}" target="_blank" class="interview-link">Start Interview</a>
+                                    <button onclick="copyUrl('${campaign.convaiAgentUrl}')" class="copy-btn">
+                                        Copy URL
+                                    </button>
+                                </div>
+                            </div>
+                        ` : ''}
+                    </div>
+                `;
+    }).join('');
+  }
+
+  async function loadCampaigns() {
+    try {
+      const response = await fetch("http://localhost:3003/campaigns", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json"
+        }
+      });
+
+      const result = await response.json();
+
+      if (result.success && Array.isArray(result.campaigns)) {
+        campaigns = result.campaigns;
+        displayCampaigns(campaigns);
+      } else {
+        console.error('Failed to load campaigns or invalid data format:', result);
+        displayCampaigns([]);  // Display empty state
+      }
+    } catch (error) {
+      console.error('Error loading campaigns:', error);
+      displayCampaigns([]);  // Display empty state on error
+    }
+  }
+
+  async function copyUrl(url) {
+    try {
+      await navigator.clipboard.writeText(url);
+      alert('URL copied to clipboard!');
+    } catch (err) {
+      console.error('Failed to copy URL:', err);
+      alert('Failed to copy URL. Please try again.');
+    }
+  }
+
+  // Load saved campaigns when page loads
+  document.addEventListener('DOMContentLoaded', loadCampaigns);
+</script>
+</body>
+</html>
